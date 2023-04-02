@@ -1,0 +1,207 @@
+<%- contentFor('content') %>  
+<!-- Login -->
+<main>
+    <!-- Display page flexible -->
+    <div class="bg-credential">
+        <!-- Center display -->
+        <img class="bg-credential-img" src="/img/logo-sekolah.svg" alt="Layar belakang login">
+        <div class="container container-credential">
+            <!-- Card to contain it -->
+            <div class="card gap-3 shadow-lg">
+                <img src="/img/logo-sekolah.svg" alt="Logo Sekolah">
+                <div class="vr d-none d-sm-inline-block"></div>
+                <div class="col-md-5">
+                    <div class="card-header d-flex bg-transparent p-0 mt-4 mt-sm-0 radius-0">
+                        <button id="btnSiswa" data-bs-target="#collapseOne" class="btn col-6 rounded-0 btn-light bg-gradient
+                        <% if(err.length > 0) { %>
+                            <% err.forEach((error) => { %>
+                                <%= error.param === "usernameSiswa" || error.param === "passwordSiswa" ? 'active' : '' %>
+                            <% }) %>
+                        <% } else { %>
+                            active
+                        <% } %>
+                        " style="border-top-left-radius: 5px !important;" type="button">
+                            Siswa
+                        </button>
+                        <button id="btnPetugas" data-bs-target="#collapseTwo" class="btn col-6 rounded-0 btn-light bg-gradient
+                        <% if(err.length > 0) { %>
+                            <% err.forEach((error) => { %>
+                                <%= error.param === "usernamePetugas" || error.param === "passwordPetugas" ? 'active' : '' %>
+                            <% }) %>
+                        <% } %>
+                        " style="border-top-right-radius: 5px !important;" type="button">
+                            Petugas
+                        </button>
+                    </div>
+                    <h1 class="text-center mt-3 mb-4">Login</h1>
+                    <!-- Siswa form -->
+                    <form id="collapseOne" class="col collapse
+                    <% if(err.length > 0) { %>
+                        <% err.forEach((error) => { %>
+                            <%= error.param === "usernameSiswa" || error.param === "passwordSiswa" ? 'show' : '' %>
+                        <% }) %>
+                    <% } else { %>
+                        show
+                    <% } %>
+                    " action="/login/siswa" method="post">
+                        <!-- Memasukan username dengan validasi -->
+                        <div class="mb-3">
+                            <div class="input-container
+                            <% if(err.length > 0) { %>
+                                <% err.forEach((error) => { %>
+                                    <%= error.param === "usernameSiswa" && error.msg == "Harap isi username" ? 'is-invalid' : '' %>
+                                <% }) %>
+                                <%= err[0].msg === err[1].msg && err[0].param === "usernameSiswa" ? 'is-invalid' : '' %>
+                            <% } %>">
+                                <label for="usernameSiswa">Username siswa</label>
+                                <input type="text" id="usernameSiswa" name="usernameSiswa"
+                                <% if(err.length > 0) { %>
+                                    <% if (err[0].msg === err[1].msg && err[0].param === "usernameSiswa") { %>
+                                        value="<%= login %>"
+                                    <% } else { %>
+                                        value=""
+                                    <% } %>
+                                <% } %>
+                                input-placeholder="Masukan username" />
+                            </div>
+                            <% if(err.length > 0) { %>
+                                <% err.forEach((error) => { %>
+                                    <% if(error.param === "usernameSiswa" && error.msg == "Harap isi username") { %>
+                                        <div id="validationUsernameServer" class="invalid-feedback"> 
+                                            <%= error.msg %>
+                                        </div>
+                                    <% } %>
+                                <% }) %>
+                            <% } %>
+                        </div>
+                        <!-- Memasukan password dengan validasi -->
+                        <div id="mata-passwordSiswa" class="mb-3 d-grid">
+                            <div class="input-container
+                            <% if(err.length > 0) { %>
+                                <% err.forEach((error) => { %>
+                                    <%= error.param === "passwordSiswa" && error.msg == "Harap isi password" ? 'is-invalid' : '' %>
+                                <% }) %>
+                                <%= err[0].msg === err[1].msg && err[1].param === "passwordSiswa" ? 'is-invalid' : '' %>
+                            <% } %>">
+                                <label for="password">Password</label>
+                                <input type="password" id="passwordSiswa" name="passwordSiswa" input-placeholder="Masukan password" />
+                                <button type="button">
+                                    <i
+                                        class="bi bi-eye-slash-fill opacity-50"
+                                        aria-hidden="true">
+                                    </i>
+                                </button>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <% if(err.length > 0) { %>
+                                    <% err.forEach((error) => { %>
+                                        <% if(error.param === "passwordSiswa" && error.msg == "Harap isi password") { %>
+                                            <div id="validationPasswordServer" class="invalid-feedback d-inline-flex"> 
+                                                <%= error.msg %>
+                                            </div>
+                                        <% } %>
+                                    <% }) %>
+                                    <% if (err[0].msg === err[1].msg && err[1].param === "passwordSiswa") { %>
+                                        <div id="validationPasswordServer" class="invalid-feedback d-inline-flex"> 
+                                            <%= err[0].msg %>
+                                        </div>
+                                    <% } %>
+                                <% } %>
+                                <!-- Reset password  -->
+                                <a class="d-inline-flex small text-decoration-none mt-1 w-75 ms-auto justify-content-end" href="/reset-password">Lupa Password?</a>
+                            </div>
+                        </div>
+                        <!-- Kirim form -->
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary">
+                                Masuk
+                            </button>
+                        </div>
+                    </form>
+                    <!-- Petugas form -->
+                    <form id="collapseTwo" class="col collapse 
+                    <% if(err.length > 0) { %>
+                        <% err.forEach((error) => { %>
+                            <%= error.param === "usernamePetugas" || error.param === "passwordPetugas" ? 'show' : '' %>
+                        <% }) %>
+                    <% } %>
+                    " action="/login/petugas" method="post">
+                        <!-- Memasukan username dengan validasi -->
+                        <div class="mb-3">
+                            <div class="input-container
+                            <% if(err.length > 0) { %>
+                                <% err.forEach((error) => { %>
+                                    <%= error.param === "usernamePetugas" && error.msg == "Harap isi username" ? 'is-invalid' : '' %>
+                                <% }) %>
+                                <%= err[0].msg === err[1].msg && err[0].param === "usernamePetugas" ? 'is-invalid' : '' %>
+                            <% } %>">
+                                <label for="usernamePetugas">Username petugas</label>
+                                <input type="text" id="usernamePetugas" name="usernamePetugas"
+                                <% if(err.length > 0) { %>
+                                    <% if (err[0].msg === err[1].msg && err[0].param === "usernamePetugas") { %>
+                                        value="<%= login %>"
+                                    <% } else { %>
+                                        value=""
+                                    <% } %>
+                                <% } %>
+                                input-placeholder="Masukan username" />
+                            </div>
+                            <% if(err.length > 0) { %>
+                                <% err.forEach((error) => { %>
+                                    <% if(error.param === "usernamePetugas" && error.msg == "Harap isi username") { %>
+                                        <div id="validationUsernameServer" class="invalid-feedback"> 
+                                            <%= error.msg %>
+                                        </div>
+                                    <% } %>
+                                <% }) %>
+                            <% } %>
+                        </div>
+                        <!-- Memasukan password dengan validasi -->
+                        <div id="mata-passwordPetugas" class="mb-3 d-grid">
+                            <div class="input-container
+                            <% if(err.length > 0) { %>
+                                <% err.forEach((error) => { %>
+                                    <%= error.param === "passwordPetugas" && error.msg == "Harap isi password" ? 'is-invalid' : '' %>
+                                <% }) %>
+                                <%= err[0].msg === err[1].msg && err[1].param === "passwordPetugas" ? 'is-invalid' : '' %>
+                            <% } %>">
+                                <label for="password">Password</label>
+                                <input type="password" id="passwordPetugas" name="passwordPetugas" input-placeholder="Input password" />
+                                <button type="button">
+                                    <i
+                                        class="bi bi-eye-slash-fill opacity-50"
+                                        aria-hidden="true">
+                                    </i>
+                                </button>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <% if(err.length > 0) { %>
+                                    <% err.forEach((error) => { %>
+                                        <% if(error.param === "passwordPetugas" && error.msg == "Harap isi password") { %>
+                                            <div id="validationPasswordServer" class="invalid-feedback d-inline-flex"> 
+                                                <%= error.msg %>
+                                            </div>
+                                        <% } %>
+                                    <% }) %>
+                                    <% if (err[0].msg === err[1].msg && err[1].param === "passwordPetugas") { %>
+                                        <div id="validationPasswordServer" class="invalid-feedback d-inline-flex"> 
+                                            <%= err[0].msg %>
+                                        </div>
+                                    <% } %>
+                                <% } %>
+                                <!-- Reset password  -->
+                                <a class="d-inline-flex small text-decoration-none mt-1 w-75 ms-auto justify-content-end" href="/reset-password">Lupa Password?</a>
+                            </div>
+                        </div>
+                        <!-- Kirim form -->
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary">
+                                Masuk
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>

@@ -1,0 +1,27 @@
+{
+  "name": "layanan-pembayaran-spp-smansa-bekasi",
+  "version": "1.0.0",
+  "description": "Ujian Kompetensi SMKN 6 Bekasi, bagian web, membuat aplikasi pembayaran spp",
+  "main": "app.js",
+  "scripts": {
+    "dev": "nodemon app",
+    "start": "node app",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Nathanure",
+  "license": "ISC",
+  "dependencies": {
+    "chalk": "^4.1.2",
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
+    "ejs": "^3.1.8",
+    "express": "^4.18.2",
+    "express-ejs-layouts": "^2.5.1",
+    "express-session": "^1.17.3",
+    "express-validator": "^6.14.3",
+    "moment": "^2.29.4",
+    "morgan": "^1.10.0",
+    "multer": "^1.4.5-lts.1",
+    "pg": "^8.9.0"
+  }
+}

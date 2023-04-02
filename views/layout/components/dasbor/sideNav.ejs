@@ -1,0 +1,59 @@
+<nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
+    <div class="sb-sidenav-menu">
+        <div class="nav">
+            <div class="sb-sidenav-menu-heading">Home</div>
+            <a class="nav-link <%= title === 'Dasbor' ? 'active' : '' %>" href="/">
+                <div class="sb-nav-link-icon"><i class="bi bi-house-door"></i></div>
+                Dasbor
+            </a>
+            <div class="sb-sidenav-menu-heading">Halaman</div>
+            <% if (admin.length < 1 && petugas.length > 0 && siswa.length < 1) { %>
+            <a class="nav-link <%= title === 'Daftar Siswa' ? 'active' : '' %>" href="/akun">
+                <div class="sb-nav-link-icon"><i class="bi bi-person-fill"></i></div>
+                Daftar Siswa
+            </a>
+            <% } else if (admin.length > 0 && petugas.length < 1 && siswa.length < 1) { %>
+            <a class="nav-link <%= title === 'Daftar Akun' ? 'active' : '' %>" href="/akun">
+                <div class="sb-nav-link-icon"><i class="bi bi-person-fill"></i></div>
+                Daftar Akun
+            </a>
+            <% } %>
+            <a class="nav-link <%= title === 'Pembayaran' ? 'active' : '' %>" href="/pembayaran">
+                <div class="sb-nav-link-icon"><i class="bi bi-wallet-fill"></i></div>
+                Pembayaran
+            </a>
+            <% if (admin.length > 0 || petugas.length > 0) { %>
+            <div class="sb-sidenav-menu-heading">Admin & Petugas</div>
+            <a class="nav-link <%= title === 'Daftar SPP' || title === 'Daftar Kelas' || title === 'Daftar Jurusan' ? 'active' : 'collapsed' %>" href="#" data-bs-toggle="collapse" data-bs-target="#dataMaster" aria-expanded="false" aria-controls="dataMaster">
+                <div class="sb-nav-link-icon"><i class="bi bi-database-fill"></i></div>Data Utama
+                <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+            </a>
+            <div class="collapse <%= title === 'Daftar SPP' || title === 'Daftar Kelas' || title === 'Daftar Jurusan' ? 'show' : '' %>" id="dataMaster" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordionPages">
+                <nav class="sb-sidenav-menu-nested nav">
+                    <a class="nav-link <%= title === 'Daftar Jurusan' ? 'active' : '' %>" href="/jurusan"><div class="sb-nav-link-icon"><i class="fas fa-building"></i></div>Jurusan</a>
+                    <a class="nav-link <%= title === 'Daftar Kelas' ? 'active' : '' %>" href="/kelas"><div class="sb-nav-link-icon"><i class="fas fa-school"></i></div>Kelas</a>
+                    <a class="nav-link <%= title === 'Daftar SPP' ? 'active' : '' %>" href="/spp"><div class="sb-nav-link-icon"><i class="fas fa-file-invoice"></i></div>SPP</a>
+                </nav>
+            </div>
+            <!-- <a class="nav-link" href="/log">
+                <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
+                Data Log
+            </a> -->
+            <% } %>
+        </div>
+    </div>
+    <div class="sb-sidenav-footer">
+        <div class="small">Masuk sebagai</div>
+        <% if (siswa.length > 0) { %>
+        <!-- Username -->
+        <div class="fs-5"><%= siswa[0].nama %></div>
+        <!-- Tingkatan -->
+        <div class="small opacity-75">siswa</div>
+        <% } else { %>
+        <!-- Username -->
+        <div class="fs-5"><%= admin.length > 0 && petugas.length < 1 ? admin[0].username : petugas[0].username %></div>
+        <!-- Tingkatan -->
+        <div class="small opacity-75"><%= admin.length > 0 && petugas.length < 1 ? admin[0].tingkatan : petugas[0].tingkatan %></div>
+        <% } %>
+    </div>
+</nav>

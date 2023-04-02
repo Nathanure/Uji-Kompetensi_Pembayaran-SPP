@@ -1,0 +1,416 @@
+<%- contentFor('content') %>
+<main>
+    <div class="container-fluid px-4">
+        <h1 class="mt-4">Dasbor</h1>
+        <ol class="breadcrumb mb-4">
+            <li class="text-capitalize breadcrumb-item">
+                <a class="text-decoration-none" href="/">Dasbor <%= admin.tingkatan || petugas.tingkatan %></a>
+            </li>
+            <li class="text-capitalize breadcrumb-item">
+                <a class="text-decoration-none" href="/akun">Daftar Akun</a>
+            </li>
+            <li class="text-capitalize breadcrumb-item active">
+                <%= akun.nama %>
+            </li>
+        </ol>
+        <% if (berhasil.length > 0) { %>
+        <!-- Pesan berhasil -->
+        <div id="pesan-berhasil" class="alert alert-success alert-dismissible" role="alert">
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="d-flex align-items-center gap-3 p-3">
+                    <i class="bi bi-check-circle-fill display-4 d-inline-flex"></i>
+                    <div class="d-grid">
+                        <div><%= keterangan %> Data <span class="text-capitalize"><%= lokasi %></span> berhasil!</div>
+                        <div class="small"><span class="text-capitalize"><%= lokasi %></span> dengan NIS <span class="fw-bold"><%= berhasil[0].id_nis %></span> bernama <span class="fw-bold"><%= berhasil[0].nama_siswa %></span> berhasil <span class="text-lowercase">di<%= keterangan %></span></div>
+                    </div>
+                </div>
+                <button type="button" class="position-relative btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            <div class="progress" role="progressbar" aria-label="Loading bar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                <div class="progress-bar progress-bar-striped progress-bar-animated"></div>
+            </div>
+        </div>
+        <% } %>
+        <div class="card mb-4">
+            <div class="card-header">
+                <i class="bi bi-person-fill fs-5 me-1"></i>
+                Detail Siswa
+            </div>
+            <div class="d-flex">
+                <img
+                    class="image-detail"
+                    src="/img/blank-profile-picture.webp"
+                    alt="Gambar Profil <%= akun.nama %>"
+                />
+                <div class="d-flex flex-column justify-content-between gap-3 card-body">
+                    <!-- d-flex untuk membuat teks terpisah -->
+                    <div class="d-grid gap-3">
+                        <div class="d-flex gap-5 align-items-center">
+                            <div class="fw-bold text-nowrap">NIS</div>
+                            <div class="d-flex gap-3 align-items-center ms-5 ps-5">
+                                <div>:</div>
+                                <div><%= akun.id_nis %></div>
+                                <button class="btn btn-outline-secondary p-0 border-0" type="button" data-bs-toggle="collapse" data-bs-target="#ubahNIS" aria-expanded="<%= err.find((error) => error.param === 'nis') ? 'true' : 'false' %>" aria-controls="ubahNIS">
+                                    <i class="bi bi-chevron-bar-right" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Ubah NIS"></i>
+                                </button>
+                                <div class="d-flex gap-2 align-items-center">
+                                    <% if (admin.length > 0 && petugas.length < 1) { %>
+                                    <!-- Memasukan NIS siswa dengan validasi -->
+                                    <div id="ubahNIS" class="<%= err.length > 0 && err.find((error) => error.param === 'nis') ? 'show' : '' %> collapse collapse-horizontal">
+                                        <div class="d-flex gap-2">
+                                            <input id="nisn" name="nisn" type="text" value="<%= akun.nisn %>" hidden>
+                                            <div class="input-container
+                                            <% if(err.length > 0) { %>
+                                                <% err.forEach((error) => { %>
+                                                    <%= error.param === "nis" && error.msg == "Isi NIS Siswa dengan benar" ? 'is-invalid' : '' %>
+                                                <% }) %>
+                                            <% } %>
+                                            ">
+                                                <label for="nisSiswa">NIS siswa</label>
+                                                <input type="text" id="nis" name="nis"
+                                                <% if(err.length > 1) { %>
+                                                    <% if (err[0].msg === err[1].msg) { %>
+                                                        value="<%= value.nis %>"
+                                                    <% } else { %>
+                                                        value="<%= akun.id_nis %>"
+                                                    <% } %>
+                                                <% } else { %>
+                                                value="<%= akun.id_nis %>"
+                                                <% } %>
+                                                input-placeholder="Perbarui NIS Siswa" />
+                                                <% if(err.length > 0) { %>
+                                                    <% err.forEach((error) => { %>
+                                                        <% if(error.param === "nis" && error.msg == "Harap isi NIS Siswa") { %>
+                                                            <div id="validasiSiswa" class="invalid-feedback"> 
+                                                                <%= error.msg %>
+                                                            </div>
+                                                        <% } %>
+                                                    <% }) %>
+                                                <% } %>
+                                            </div>
+                                            <button id="edit-btn" type="button" class="btn btn-outline-warning">
+                                                Edit
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <% } %>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-flex gap-5">
+                            <div class="fw-bold text-nowrap">NISN</div>
+                            <div class="d-flex gap-3 ms-5 ps-4">
+                                <div>:</div>
+                                <div><%= akun.nisn %></div>
+                            </div>
+                        </div>
+                        <div class="d-flex gap-3">
+                            <div class="fw-bold text-nowrap">Nama Petugas</div>
+                            <div class="d-flex gap-3 ms-4 ps-3">
+                                <div>:</div>
+                                <div><%= akun.nama %></div>
+                            </div>
+                        </div>
+                        <div class="d-flex gap-5">
+                            <div class="fw-bold text-nowrap">Kelas</div>
+                            <div class="d-flex gap-3 ms-5 ps-4">
+                                <div>:</div>
+                                <div><%= akun.kelas %></div>
+                            </div>
+                        </div>
+                        <div class="d-flex gap-5">
+                            <div class="fw-bold text-nowrap">Jurusan</div>
+                            <div class="d-flex gap-3 ms-5 ps-2">
+                                <div>:</div>
+                                <div><%= akun.jurusan %></div>
+                            </div>
+                        </div>
+                        <div class="d-flex gap-5">
+                            <div class="fw-bold text-nowrap">Email</div>
+                            <div class="d-flex gap-3 ms-5 ps-4">
+                                <div>:</div>
+                                <div><%= akun.email %></div>
+                            </div>
+                        </div>
+                        <div class="d-flex gap-5">
+                            <div class="fw-bold text-nowrap">Telpon</div>
+                            <div class="d-flex gap-3 ms-5 ps-4">
+                                <div>:</div>
+                                <div><%= akun.telp %></div>
+                            </div>
+                        </div>
+                        <div class="d-flex gap-5">
+                            <div class="fw-bold text-nowrap">Alamat</div>
+                            <div class="d-flex gap-3 ms-5 ps-3">
+                                <div>:</div>
+                                <div><%= akun.alamat %></div>
+                            </div>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <div class="fw-bold text-nowrap">Tanggal Akun Dibuat</div>
+                            <div class="d-flex gap-3">
+                                <div>:</div>
+                                <div><%= akun.tgl_buat %></div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Anchors link to other pages -->
+                    <div class="d-flex">
+                        <!-- Anchors to return back to contact page -->
+                        <a role="button" href="/akun" class="btn btn-outline-secondary rounded">
+                            <i class="bi bi-arrow-bar-left me-1"></i>Kembali ke Daftar Akun
+                        </a>
+                        <% if (admin.length > 0 && petugas.length < 1) { %>
+                        <button type="button" class="ms-auto btn btn-warning rounded" data-bs-toggle="modal" data-bs-target="#ubahSiswa">
+                            <i class="bi bi-pencil-square me-1"></i>Edit
+                        </button>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal -->
+    <% if (admin.length > 0 && petugas.length < 1) { %>
+    <div
+        class="modal fade"
+        id="ubahSiswa"
+        data-bs-backdrop="static"
+        data-bs-keyboard="false"
+        tabindex="-1"
+        aria-labelledby="ubahSiswaLabel"
+        aria-hidden="true"
+    >
+        <div class="modal-dialog modal-dialog-centered">
+            <form action="/akun/<%= akun.id_nis %>/siswa" method="post" class="modal-content px-3">
+                <div class="modal-header">
+                    <!-- Modal title -->
+                    <h1 class="modal-title fs-5" id="ubahSiswaLabel">
+                        Ubah Siswa
+                    </h1>
+                    <!-- Tombol tutup -->
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- NIS -->
+                    <input id="nis" name="nis" value="<%= akun.id_nis %>" type="text" hidden>
+                    <!-- Memasukan NISN siswa dengan validasi -->
+                    <div class="mb-3">
+                        <div class="input-container
+                        <% if(err.length > 0) { %>
+                            <% err.forEach((error) => { %>
+                                <%= error.param === "nisn" && error.msg == "Harap isi NISN Siswa" ? 'is-invalid' : '' %>
+                            <% }) %>
+                        <% } %>
+                        <% if (err.length > 1) { %>
+                            <%= err[0].msg === err[1].msg ? 'is-invalid' : '' %>
+                        <% } %>
+                        ">
+                            <label for="nisnSiswa">NISN siswa</label>
+                            <input type="text" id="nisn" name="nisn"
+                            <% if(err.length > 1) { %>
+                                <% if (err[0].msg === err[1].msg) { %>
+                                    value="<%= value.nisn %>"
+                                <% } else { %>
+                                    value="<%= akun.nisn %>"
+                                <% } %>
+                            <% } else { %>
+                            value="<%= akun.nisn %>"
+                            <% } %>
+                            input-placeholder="Isi NISN Siswa sesuai data NISN siswa yang benar" />
+                        </div>
+                        <% if(err.length > 0) { %>
+                            <% err.forEach((error) => { %>
+                                <% if(error.param === "nisn" && error.msg == "Harap isi NISN Siswa") { %>
+                                    <div id="validasiSiswa" class="invalid-feedback"> 
+                                        <%= error.msg %>
+                                    </div>
+                                <% } %>
+                            <% }) %>
+                        <% } %>
+                    </div>
+                    <!-- Memasukan nama siswa dengan validasi -->
+                    <div class="mb-3">
+                        <div class="input-container
+                        <% if(err.length > 0) { %>
+                            <% err.forEach((error) => { %>
+                                <%= error.param === "nama_siswa" && error.msg == "Harap isi Nama Siswa" ? 'is-invalid' : '' %>
+                            <% }) %>
+                        <% } %>
+                        <% if (err.length > 1) { %>
+                            <%= err[0].msg === err[1].msg ? 'is-invalid' : '' %>
+                        <% } %>
+                        ">
+                            <label for="namaSiswa">Nama siswa</label>
+                            <input type="text" id="nama_siswa" name="nama_siswa"
+                            <% if(err.length > 1) { %>
+                                <% if (err[0].msg === err[1].msg) { %>
+                                    value="<%= value.nama_siswa %>"
+                                <% } else { %>
+                                    value="<%= akun.nama %>"
+                                <% } %>
+                            <% } else { %>
+                            value="<%= akun.nama %>"
+                            <% } %>
+                            input-placeholder="Isi nama siswa sesuai dengan nama asli" />
+                        </div>
+                        <% if(err.length > 0) { %>
+                            <% err.forEach((error) => { %>
+                                <% if(error.param === "nama_siswa" && error.msg == "Harap isi Nama Siswa") { %>
+                                    <div id="validasiSiswa" class="invalid-feedback"> 
+                                        <%= error.msg %>
+                                    </div>
+                                <% } %>
+                            <% }) %>
+                        <% } %>
+                    </div>
+                    <!-- Memasukan kelas siswa dengan validasi -->
+                    <div class="mb-3">
+                        <div id="kelas-container" class="
+                        <% if(err.length > 0) { %>
+                            <% err.forEach((error) => { %>
+                                <%= error.param === "kelas_siswa" ? 'is-invalid' : '' %>
+                            <% }) %>
+                        <% } %>">
+                            <select id="kelas_siswa" name="kelas_siswa" class="form-select" aria-label="Pilih Kelas">
+                                <% kelas.forEach(tiap_kelas => { %>
+                                <% if (tiap_kelas.nama_kelas === akun.kelas) { %>
+                                <option value="<%= akun.kelas %>" selected><%= akun.kelas %></option>
+                                <% } else if (err.length > 1) { %>
+                                <option value="<%= value.kelas_siswa %>" selected><%= value.kelas_siswa %></option>
+                                <% } else { %>
+                                <option value="<%= tiap_kelas.nama_kelas %>"><%= tiap_kelas.nama_kelas %></option>
+                                <% } %>
+                                <% }) %>
+                            </select>
+                        </div>
+                        <% if(err.length > 0) { %>
+                            <% err.forEach((error) => { %>
+                                <% if(error.param === "kelas_siswa") { %>
+                                    <div id="validasiKelas" class="invalid-feedback"> 
+                                        <%= error.msg %>
+                                    </div>
+                                <% } %>
+                            <% }) %>
+                        <% } %>
+                    </div>
+                    <!-- Memasukan alamat siswa dengan validasi -->
+                    <div class="mb-3">
+                        <div class="textarea-container
+                        <% if(err.length > 0) { %>
+                            <% err.forEach((error) => { %>
+                                <%= error.param === "alamat_siswa" && error.msg == "Harap isi Alamat Siswa" ? 'is-invalid' : '' %>
+                            <% }) %>
+                        <% } %>
+                        <% if (err.length > 1) { %>
+                            <%= err[0].msg === err[1].msg ? 'is-invalid' : '' %>
+                        <% } %>
+                        ">
+                            <label for="alamatSiswa">Alamat siswa</label>
+                            <% if(err.length > 0 || err.length < 1) { %>
+                            <textarea name="alamat_siswa" id="alamat_siswa" input-placeholder="Isi alamat siswa sesuai dengan data alamat siswa"><%= akun.alamat %></textarea>
+                            <% } else if(err.length > 1) { %>
+                                <% if (err[0].msg === err[1].msg) { %>
+                                <textarea name="alamat_siswa" id="alamat_siswa" input-placeholder="Isi alamat siswa sesuai dengan data alamat siswa" cols=""><%= value.alamat_siswa %></textarea>
+                                <% } %>
+                            <% } %>
+                        </div>
+                        <% if(err.length > 0) { %>
+                            <% err.forEach((error) => { %>
+                                <% if(error.param === "alamat_siswa" && error.msg == "Harap isi Alamat Siswa") { %>
+                                    <div id="validasiSiswa" class="invalid-feedback"> 
+                                        <%= error.msg %>
+                                    </div>
+                                <% } %>
+                            <% }) %>
+                        <% } %>
+                    </div>
+                    <!-- Memasukan telpon siswa dengan validasi -->
+                    <div class="mb-3">
+                        <div class="input-container
+                        <% if(err.length > 0) { %>
+                            <% err.forEach((error) => { %>
+                                <%= error.param === "telpon_siswa" && error.msg == "Harap isi Telpon Siswa" ? 'is-invalid' : '' %>
+                            <% }) %>
+                        <% } %>
+                        <% if (err.length > 1) { %>
+                            <%= err[0].msg === err[1].msg ? 'is-invalid' : '' %>
+                        <% } %>
+                        ">
+                            <label for="telponSiswa">Telpon siswa</label>
+                            <input type="text" id="telpon_siswa" name="telpon_siswa"
+                            <% if(err.length > 1) { %>
+                                <% if (err[0].msg === err[1].msg) { %>
+                                    value="<%= value.telpon_siswa %>"
+                                <% } else { %>
+                                    value="<%= akun.telp %>"
+                                <% } %>
+                            <% } else { %>
+                            value="<%= akun.telp %>"
+                            <% } %>
+                            input-placeholder="Isi telpon siswa dengan nomor asli siswa, memakai awalan '08'" />
+                        </div>
+                        <% if(err.length > 0) { %>
+                            <% err.forEach((error) => { %>
+                                <% if(error.param === "telpon_siswa" && error.msg == "Harap isi Telpon Siswa") { %>
+                                    <div id="validasiSiswa" class="invalid-feedback"> 
+                                        <%= error.msg %>
+                                    </div>
+                                <% } %>
+                            <% }) %>
+                        <% } %>
+                    </div>
+                    <!-- Memasukan email siswa dengan validasi -->
+                    <div class="mb-3">
+                        <div class="input-container
+                        <% if(err.length > 0) { %>
+                            <% err.forEach((error) => { %>
+                                <%= error.param === "email_siswa" && error.msg == "Harap isi Email Siswa" ? 'is-invalid' : '' %>
+                            <% }) %>
+                        <% } %>
+                        <% if (err.length > 1) { %>
+                            <%= err[0].msg === err[1].msg ? 'is-invalid' : '' %>
+                        <% } %>
+                        ">
+                            <label for="emailSiswa">Email siswa</label>
+                            <input type="text" id="email_siswa" name="email_siswa"
+                            <% if(err.length > 1) { %>
+                                <% if (err[0].msg === err[1].msg) { %>
+                                    value="<%= value.email_siswa %>"
+                                <% } else { %>
+                                    value="<%= akun.email %>"
+                                <% } %>
+                            <% } else { %>
+                            value="<%= akun.email %>"
+                            <% } %>
+                            input-placeholder="Isi email siswa sesuai dengan email asli siswa" />
+                        </div>
+                        <% if(err.length > 0) { %>
+                            <% err.forEach((error) => { %>
+                                <% if(error.param === "email_siswa" && error.msg == "Harap isi Email Siswa") { %>
+                                    <div id="validasiSiswa" class="invalid-feedback"> 
+                                        <%= error.msg %>
+                                    </div>
+                                <% } %>
+                            <% }) %>
+                        <% } %>
+                        <!-- Pesan terakhir -->
+                        <% if (err.length > 1) { %>
+                            <% if (err[0].msg === err[1].msg) { %>
+                                <div id="validasiJurusan" class="invalid-feedback"> 
+                                    <%= err[0].msg %>
+                                </div>
+                            <% } %>
+                        <% } %>
+                    </div>
+                </div>
+                <div class="modal-footer d-grid" style="justify-content: stretch;">
+                    <button type="submit" class="btn btn-warning">
+                        Edit
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <% } %>
+</main>

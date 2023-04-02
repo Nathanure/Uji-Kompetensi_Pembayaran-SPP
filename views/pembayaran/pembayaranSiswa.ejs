@@ -1,0 +1,325 @@
+<%- contentFor('content') %>
+<main>
+    <div class="container-fluid px-4">
+        <h1 class="mt-4 text-center">Pembayaran</h1>
+        <ol class="breadcrumb mb-4 justify-content-center">
+            <li class="text-capitalize breadcrumb-item">
+                <a class="text-decoration-none" href="/"
+                    >Halaman Utama</a
+                >
+            </li>
+            <li class="text-capitalize breadcrumb-item active">
+                Pembayaran SPP <%= siswa[0].nama %>
+            </li>
+        </ol>
+        <hr class="my-4 mx-3 border-2">
+        <!-- Tampilan daftar jurusan untuk Admin -->
+        <div id="utama" class="d-grid d-lg-flex gap-3 h-100 position-relative mb-4">
+            <!-- SPP -->
+            <% if (pembayaran.length < 1) { %>
+            <div class="d-flex flex-column col-12 col-lg-5 mt-5">
+                <div class="mb-5 text-center">
+                    <h1 class="fw-bolder"><span class="text-capitalize">Pembayaran SPP</span></h1>
+                    <p class="lead fw-normal text-black-50 mb-0">
+                        <%= siswa[0].nama %>
+                    </p>
+                </div>
+                <!-- Display page, if there's no data in checkout -->
+                <div class="d-grid justify-content-center text-center mt-5">
+                    <p>Halaman Pembayaran Kosong</p>
+                    <!-- Add Order -->
+                    <p class="small opacity-50">Terimakasih telah melunasi SPP Anda</p>
+                </div>
+            </div>
+            <% } else { %>
+            <!-- Display page, if there's data in checkout -->
+            <div class="col-12 col-lg-5 col-xl-4 mt-3">
+                <h1 class="fs-4 text-center">Bayar SPP</h1>
+                <div class="d-flex flex-wrap justify-content-center">
+                    <% pembayaran.forEach(spp => { %>
+                    <div class="p-2">
+                        <div class="card h-100">
+                            <!-- Detail SPP -->
+                            <div class="card-body p-3">
+                                <!-- Product name -->
+                                <h5 class="name fw-bolder text-center mt-3 mb-4">SPP Terbaru </h5>
+                                <div class="d-flex justify-content-between gap-3 mt-4">
+                                    <div class="d-grid gap-2">
+                                        <!-- Tahun -->
+                                        <span class="fw-bold">Tahun SPP</span>
+                                        <!-- Nominal -->
+                                        <span class="fw-bold">Nominal SPP</span>
+                                        <!-- Debet -->
+                                        <span class="fs-5 fw-bold">Total tunggakan</span>
+                                    </div>
+                                    <div class="d-grid text-end gap-2">
+                                        <!-- Tahun -->
+                                        <span><%= spp.id_spp.substring(spp.id_spp.length - 4) %></span>
+                                        <!-- Nominal -->
+                                        <span>Rp<%= spp.nominal %></span>
+                                        <!-- Debet -->
+                                        <span class="fs-5 fw-bold">Rp<%= spp.debet %></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Product actions-->
+                            <div class="card-footer p-3 border-top-0 bg-transparent">
+                                <div class="d-grid justify-content-stretch">
+                                    <button class="btn btn-outline-success flex-shrink-0 fw-bold" type="button" data-bs-toggle="modal" data-bs-target="#bayarSPP">
+                                        Bayar<i class="bi bi-wallet2 ms-2"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <% }) %>
+                </div>
+            </div>
+            <% } %>
+            <div class="vr d-none d-lg-block border-2"></div>
+            <hr class="d-lg-none mx-3 border-2">
+            <!-- Display detail spp yang belum dibayar dan sisa bayar -->
+            <div class="d-flex flex-column col mt-3">
+                <h1 class="fs-4 text-center">Detail SPP</h1>
+                <div class="d-flex gap-3 align-items-center justify-content-center opacity-50 my-3 my-lg-auto">
+                    <span>=</span>
+                    <div class="d-flex flex-column text-center">
+                        <p class="mb-0 small">Detail SPP sedang dalam proses pembuatan</p>
+                        <p class="mb-0 small">Terimakasih atas kesabaran Anda.</p>
+                    </div>
+                    <span>=</span>
+                </div>
+            </div>
+            <% if (berhasil.length > 0) { %>
+            <!-- Pesan berhasil -->
+            <div id="pesan-berhasil" class="alert alert-success alert-dismissible" role="alert">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="d-flex align-items-center gap-3 p-3">
+                        <i class="bi bi-check-circle-fill display-4 d-inline-flex"></i>
+                        <div class="d-grid">
+                            <div><%= keterangan %> Data <span class="text-uppercase"><%= hal %></span> berhasil!</div>
+                            <div class="small"><%= keterangan %> <span class="text-uppercase fw-bold"><%= hal %></span> dengan ID <span class="fw-bold"><%= berhasil[0].id_pembayaran %></span> atas nama <span class="text-uppercase fw-bold"><%= siswa[0].nama %></span>, berhasil <span class="text-lowercase">di<%= keterangan %></span></div>
+                        </div>
+                    </div>
+                    <button type="button" class="position-relative btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                <div class="progress" role="progressbar" aria-label="Loading bar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                    <div class="progress-bar progress-bar-striped progress-bar-animated"></div>
+                </div>
+            </div>
+            <% } %>
+        </div>
+        <hr class="my-4 mx-3 border-2">
+        <div class="col my-4">
+            <h1 class="text-center mt-3 mb-4">Riwayat</h1>
+            <div class="card">
+                <div class="d-flex p-0 mt-4 mt-sm-0 radius-0">
+                    <!-- Tombol riwayat masuk -->
+                    <button id="btnSiswa" data-bs-target="#collapseOne" class="btn col-6 rounded-0 btn-light bg-gradient active" style="border-top-left-radius: 5px !important;" type="button">
+                        Masuk
+                    </button>
+                    <!-- Tombol riwayat keluar -->
+                    <button id="btnPetugas" data-bs-target="#collapseTwo" class="btn col-6 rounded-0 btn-light bg-gradient" style="border-top-right-radius: 5px !important;" type="button">
+                        Keluar
+                    </button>
+                </div>
+                <!-- Riwayat Masuk -->
+                <div id="collapseOne" class="col collapse show">
+                    <% if (pembayaranMasuk.length < 1) { %>
+                    <div class="d-flex flex-column col-12 col-lg-5 mt-5">
+                        <!-- Display page, if there's no data in checkout -->
+                        <div class="d-grid justify-content-center text-center mt-5">
+                            <p>Riwayat masuk Anda kosong</p>
+                            <!-- Add Order -->
+                            <p class="small opacity-50">Harap menunggu membayar SPP Anda bila ada.</p>
+                        </div>
+                    </div>
+                    <% } else { %>
+                    <div class="card-body">
+                        <table
+                            class="table table-hover table-bordered mb-0"
+                            id="tabel-noprint-1"
+                        >
+                            <thead class="text-nowrap">
+                                <tr>
+                                    <% const riwayatMasuk = ['No.', 'ID Pembayaran', 'Awal Bayar', 'Nama Gambar', 'Aksi'] %>
+                                    <% riwayatMasuk.forEach(kolom => { %>
+                                    <th><%= kolom %></th>
+                                    <% }) %>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% pembayaranMasuk.forEach((baris, i) => { %>
+                                <tr>
+                                    <th><%= i+1 %>.</th>
+                                    <td><%= baris.id_pembayaran %></td>
+                                    <td><%= baris.tgl_bayar_masuk %></td>
+                                    <td><%= baris.gambar_nama %></td>
+                                    <td>
+                                        <div class="d-grid">
+                                            <button class="btn btn-outline-success flex-shrink-0 fw-bold" type="button" data-bs-toggle="modal" data-bs-target="#ubah-pembayaran">
+                                                Bayar<i class="bi bi-wallet2 ms-2"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <% }) %>
+                            </tbody>
+                        </table>
+                    </div>
+                    <% } %>
+                </div>
+                <!-- Riwayat Keluar -->
+                <div id="collapseTwo" class="col collapse">
+                    <% if (pembayaranKeluar.length < 1) { %>
+                    <div class="d-flex flex-column my-5">
+                        <!-- Display page, if there's no data in checkout -->
+                        <div class="d-grid justify-content-center text-center">
+                            <p>Riwayat keluar Anda kosong</p>
+                            <p class="small opacity-50">Harap menunggu pihak petugas untuk mengonfirmasi pembayaran Anda.</p>
+                        </div>
+                    </div>
+                    <% } else { %>
+                    <div class="card-body">
+                        <table
+                            class="table table-hover table-bordered mb-0"
+                            id="tabel-noprint-2"
+                        >
+                            <thead class="text-nowrap">
+                                <tr>
+                                    <% const riwayatKeluar = ['No.', 'ID Pembayaran', 'Pembayaran Sukses', 'Nama Gambar', 'Aksi'] %>
+                                    <% riwayatKeluar.forEach(kolom => { %>
+                                    <th><%= kolom %></th>
+                                    <% }) %>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% pembayaranKeluar.forEach((baris, i) => { %>
+                                <tr>
+                                    <th><%= i+1 %>.</th>
+                                    <td><%= baris.id_nis %></td>
+                                    <td><%= baris.nama %></td>
+                                    <td><%= baris.kelas %></td>
+                                    <td><%= baris.id_spp === null ? '-' : baris.id_spp %></td>
+                                    <td>Rp<%= baris.nominal === null ? '-' : baris.nominal %></td>
+                                    <td>
+                                        <div class="d-grid">
+                                            <a href="?ubah=ubah-spp&id=<%= baris.id_nis %>" role="button" class="flex-fill btn btn-warning"><i class="bi bi-pencil-square"></i></a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <% }) %>
+                            </tbody>
+                        </table>
+                    </div>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal -->
+    <!-- Modal bayar SPP -->
+    <div
+        class="modal modal-sm fade"
+        id="bayarSPP"
+        data-bs-backdrop="static"
+        data-bs-keyboard="false"
+        tabindex="-1"
+        aria-labelledby="bayarSPPLabel"
+        aria-hidden="true"
+    >
+        <div class="modal-dialog modal-dialog-centered">
+            <form action="/pembayaran" method="post" enctype="multipart/form-data" class="modal-content px-3">
+                <div class="modal-header">
+                    <!-- Modal title -->
+                    <h1 class="modal-title fs-5" id="bayarSPPLabel">
+                        Bayar SPP
+                    </h1>
+                    <!-- Tombol tutup -->
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Upload gambar -->
+                    <div>
+                        <label for="laporanPembayaran" style="transform:translate(8px, 9px) scale(1); background: rgba(255, 255, 255, 1); position: relative; z-index: 1000;">Masukan foto pembayaran</label>
+                        <div class="input-container
+                        <% if(err.length > 0) { %>
+                            <% err.forEach((error) => { %>
+                                <%= error.param === "image" ? 'is-invalid' : '' %>
+                            <% }) %>
+                        <% } %>
+                        ">
+                            <input type="file" accept="image/*" id="image" name="image" style="opacity: 1;" />
+                        </div>
+                        <% if(err.length > 0) { %>
+                            <% err.forEach((error) => { %>
+                                <% if(error.param === "image") { %>
+                                    <div id="validasiPetugas" class="invalid-feedback"> 
+                                        <%= error.msg %>
+                                    </div>
+                                <% } %>
+                            <% }) %>
+                        <% } %>
+                    </div>
+                </div>
+                <div class="modal-footer d-grid px-0" style="justify-content: stretch;">
+                    <button type="submit" class="btn btn-warning">
+                        Bayar<i class="bi bi-arrow-right-circle ms-2"></i>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!-- Ubah gambar -->
+    <div
+        class="modal modal-sm fade"
+        id="ubah-pembayaran"
+        data-bs-backdrop="static"
+        data-bs-keyboard="false"
+        tabindex="-1"
+        aria-labelledby="ubahPembayaranLabel"
+        aria-hidden="true"
+    >
+        <div class="modal-dialog modal-dialog-centered">
+            <form action="/pembayaran" method="post" enctype="multipart/form-data" class="modal-content px-3">
+                <div class="modal-header">
+                    <!-- Modal title -->
+                    <h1 class="modal-title fs-5" id="ubahPembayaranLabel">
+                        Bayar SPP
+                    </h1>
+                    <!-- Tombol tutup -->
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Upload gambar -->
+                    <div>
+                        <label for="laporanPembayaran" style="transform:translate(8px, 9px) scale(1); background: rgba(255, 255, 255, 1); position: relative; z-index: 1000;">Masukan foto pembayaran</label>
+                        <div class="input-container
+                        <% if(err.length > 0) { %>
+                            <% err.forEach((error) => { %>
+                                <%= error.param === "image" ? 'is-invalid' : '' %>
+                            <% }) %>
+                        <% } %>
+                        ">
+                            <input type="file" accept="image/*" id="image" name="image" style="opacity: 1;" />
+                        </div>
+                        <% if(err.length > 0) { %>
+                            <% err.forEach((error) => { %>
+                                <% if(error.param === "image") { %>
+                                    <div id="validasiPetugas" class="invalid-feedback"> 
+                                        <%= error.msg %>
+                                    </div>
+                                <% } %>
+                            <% }) %>
+                        <% } %>
+                    </div>
+                </div>
+                <div class="modal-footer d-grid px-0" style="justify-content: stretch;">
+                    <button type="submit" class="btn btn-warning">
+                        Bayar<i class="bi bi-arrow-right-circle ms-2"></i>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</main>

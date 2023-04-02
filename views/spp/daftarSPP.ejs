@@ -1,0 +1,265 @@
+<%- contentFor('content') %>
+<main>
+    <div class="container-fluid px-4">
+        <h1 class="mt-4">Dasbor</h1>
+        <ol class="breadcrumb mb-4">
+            <li class="text-capitalize breadcrumb-item">
+                <a class="text-decoration-none" href="/"
+                    >Dasbor <%= admin.length > 0 && petugas.length < 1 ? admin[0].tingkatan : petugas[0].tingkatan %></a
+                >
+            </li>
+            <li class="text-capitalize breadcrumb-item active">
+                Daftar SPP
+            </li>
+        </ol>
+        <!-- Tampilan daftar SPP untuk Admin -->
+        <% if (admin.length > 0 && petugas.length < 1) { %>
+        <div class="d-grid d-lg-flex gap-3 h-100 position-relative mb-4">
+            <div class="w-100 card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <div>
+                        <i class="fas fa-table me-1"></i>
+                        Daftar SPP
+                    </div>
+                    <div>
+                        <button
+                            type="button"
+                            class="btn btn-sm btn-success <%= err.length > 0 ? '' : 'collapsed' %>"
+                            data-bs-toggle="collapse"
+                            data-bs-target="#tambahSPP"
+                            aria-expanded="<%= err.length > 0 ? 'true' : 'false' %>"
+                            aria-controls="tambahSPP"
+                        >
+                            Tambah SPP<i class="bi bi-plus ms-1"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <table
+                        class="table table-hover table-bordered"
+                        id="tabel-print-1"
+                    >
+                        <thead>
+                            <tr>
+                                <% const kolomSPP1 = ['No.', 'ID', 'Tahun', 'Nominal', 'Aksi'] %>
+                                <% kolomSPP1.forEach(kolom => { %>
+                                <th><%= kolom %></th>
+                                <% }) %>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% spp.forEach((baris, i) => { %>
+                            <tr>
+                                <th><%= i+1 %>.</th>
+                                <td><%= baris.id_spp %></td>
+                                <td><%= baris.tahun %></td>
+                                <td>Rp<%= baris.nominal %></td>
+                                <td>
+                                    <a href="?hapus=hapus-SPP&id=<%= baris.id_spp %>" role="button" class="w-100 h-100 btn btn-outline-danger"><i class="bi bi-trash3-fill"></i></a>
+                                </td>
+                            </tr>
+                            <% }) %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <% if (berhasil.length > 0) { %>
+            <!-- Pesan berhasil tambah SPP -->
+            <div id="pesan-berhasil" class="alert alert-success alert-dismissible" role="alert">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="d-flex align-items-center gap-3 p-3">
+                        <i class="bi bi-check-circle-fill display-4 d-inline-flex"></i>
+                        <div class="d-grid">
+                            <div><%= keterangan %> Data <span class="text-uppercase"><%= lokasi %></span> berhasil!</div>
+                            <div class="small"><span class="text-uppercase"><%= lokasi %></span> dengan ID <span class="fw-bold"><%= berhasil[0].id_spp %></span> untuk tahun <span class="fw-bold"><%= berhasil[0].tahun %></span>, berhasil <span class="text-lowercase">di<%= keterangan %></span></div>
+                        </div>
+                    </div>
+                    <button type="button" class="position-relative btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                <div class="progress" role="progressbar" aria-label="Loading bar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                    <div class="progress-bar progress-bar-striped progress-bar-animated"></div>
+                </div>
+            </div>
+            <% } %>
+            <% if (query.ubah === undefined) { %>
+            <!-- Form tambah SPP -->
+            <div id="tambahSPP" class="<%= err.length > 0 ? 'show' : '' %> collapse sticky-lg-top h-100 justify-content-evenly collapse-horizontal card col-12 col-sm-8 col-md-6 col-lg-4 col-xxl-3 mx-auto p-4">
+                <h1 class="fs-4 text-center mb-3">SPP Baru</h1>
+                <form id="form-tambah" action="/spp/" method="post">
+                    <!-- Memasukan tingkat kelas dengan validasi -->
+                    <div class="mb-3">
+                        <div id="tingkat-container">
+                            <label class="mb-1" for="tingkatKelas">Tingkat Kelas</label>
+                            <select id="tingkat_kelas" name="tingkat_kelas" class="form-select
+                            <% if(err.length > 0) { %>
+                                <% err.forEach((error) => { %>
+                                    <%= error.param === "tingkat_kelas" && error.msg == "Harap isi Tingkatan Kelas" ? 'is-invalid' : '' %>
+                                <% }) %>
+                            <% } %>
+                            <% if (err.length > 1) { %>
+                                <%= err[0].msg === err[1].msg ? 'is-invalid' : '' %>
+                            <% } %>" aria-label="Pilih Tingkatan Kelas">
+                                <option value="" selected disabled>-- Pilih Tingkat Kelas --</option>
+                                <% for( let tingkat = 10; tingkat <= 12; tingkat++ ) { %>
+                                <option value="<%= tingkat %>"><%= tingkat %></option>
+                                <% } %>
+                            </select>
+                        </div>
+                        <% if(err.length > 0) { %>
+                            <% err.forEach((error) => { %>
+                                <% if(error.param === "tingkat_kelas" && error.msg == "Harap isi ID Kelas") { %>
+                                    <div id="validasiKelas" class="invalid-feedback"> 
+                                        <%= error.msg %>
+                                    </div>
+                                <% } %>
+                            <% }) %>
+                        <% } %>
+                    </div>
+                    <!-- Memasukan tahun dengan validasi -->
+                    <div class="mb-3">
+                        <div id="tahun-container">
+                            <label class="mb-1" for="tahun">Tahun</label>
+                            <select id="tahun" name="tahun" class="form-select
+                            <% if(err.length > 0) { %>
+                                <% err.forEach((error) => { %>
+                                    <%= error.param === "tahun" && error.msg == "Harap isi Tahun" ? 'is-invalid' : '' %>
+                                <% }) %>
+                            <% } %>
+                            <% if (err.length > 1) { %>
+                                <%= err[0].msg === err[1].msg ? 'is-invalid' : '' %>
+                            <% } %>" aria-label="Pilih Tahun">
+                                <option value="" selected disabled>-- Pilih Tahun --</option>
+                                <% for (let year = new Date().getFullYear(); year > new Date().getFullYear()-5; year--) { %>
+                                <option value="<%= year %>"><%= year %></option>
+                                <% } %>
+                            </select>
+                        </div>
+                        <% if(err.length > 0) { %>
+                            <% err.forEach((error) => { %>
+                                <% if(error.param === "tahun" && error.msg == "Harap isi Tahun") { %>
+                                    <div id="validasiJurusan" class="invalid-feedback"> 
+                                        <%= error.msg %>
+                                    </div>
+                                <% } %>
+                            <% }) %>
+                        <% } %>
+                    </div>
+                    <!-- Memasukan ID Jurusan dengan validasi -->
+                    <div class="mb-3">
+                        <div class="input-container
+                        <% if(err.length > 0) { %>
+                            <% err.forEach((error) => { %>
+                                <%= error.param === "nominal" && error.msg == "Harap isi Nominal SPP" ? 'is-invalid' : '' %>
+                            <% }) %>
+                        <% } %>
+                        <% if (err.length > 1) { %>
+                            <%= err[0].msg === err[1].msg ? 'is-invalid' : '' %>
+                        <% } %>">
+                            <label for="nominal">Nominal</label>
+                            <span class="money">Rp</span>
+                            <input type="text" class="money" id="nominal" name="nominal"
+                            <% if(err.length > 1) { %>
+                                <% if (err[0].msg === err[1].msg && err[2].param === "nominal") { %>
+                                    value="<%= err.value %>"
+                                <% } else { %>
+                                    value=""
+                                <% } %>
+                            <% } %>
+                            input-placeholder="0" />
+                        </div>
+                        <% if(err.length > 0) { %>
+                            <% err.forEach((error) => { %>
+                                <% if(error.param === "nominal" && error.msg == "Harap isi Nominal SPP") { %>
+                                    <div id="validasiNominal" class="invalid-feedback"> 
+                                        <%= error.msg %>
+                                    </div>
+                                <% } %>
+                            <% }) %>
+                        <% } %>
+                        <% if (err.length > 1) { %>
+                            <% if (err[0].msg === err[1].msg) { %>
+                                <div id="validasiJurusan" class="invalid-feedback"> 
+                                    <%= err[0].msg %>
+                                </div>
+                            <% } %>
+                        <% } %>
+                    </div>
+                    <!-- Kirim form -->
+                    <div class="d-grid">
+                        <button id="submit-btn" type="submit" class="btn btn-primary">
+                            Submit
+                        </button>
+                    </div>
+                </form>
+            </div>
+            <% } %>
+        </div>
+        <% } else if (admin.length < 1 && petugas.length > 0) { %>
+        <div class="card">
+            <div class="card-header d-flex align-items-center">
+                <i class="fas fa-table me-1"></i>
+                Daftar SPP
+            </div>
+            <div class="card-body">
+                <table
+                    class="table table-hover table-bordered"
+                    id="tabel-noprint-1"
+                >
+                    <thead>
+                        <tr>
+                            <% const kolomSPP2 = ['No.', 'ID', 'Tahun', 'Nominal'] %>
+                            <% kolomSPP2.forEach(kolom => { %>
+                            <th><%= kolom %></th>
+                            <% }) %>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% spp.forEach((baris, i) => { %>
+                        <tr>
+                            <th><%= i+1 %>.</th>
+                            <td><%= baris.id_spp %></td>
+                            <td><%= baris.tahun %></td>
+                            <td>Rp<%= baris.nominal %></td>
+                        </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <% } %>
+    </div>
+    <!-- Modal -->
+    <!-- Modal hapus jurusan -->
+    <% if (query.hapus !== undefined) { %>
+    <div
+        class="modal modal-sm fade"
+        id="hapus-SPP"
+        data-bs-backdrop="static"
+        data-bs-keyboard="false"
+        tabindex="-1"
+        aria-labelledby="hapusSPPLabel"
+        aria-hidden="true"
+    >
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content px-3">
+                <div class="modal-header justify-content-center px-0">
+                    <h1 class="modal-title text-center" id="hapusSPPLabel">
+                        Hapus SPP
+                    </h1>
+                </div>
+                <div class="modal-body px-0 text-center">
+                    <p class="fs-5">Apakah anda ingin menghapus data SPP dengan ID <span class="fw-bold"><%= query.id %></span>?</p>
+                </div>
+                <div class="modal-footer justify-content-center gap-1 border-0 px-0 pt-0">
+                    <a href="/spp" role="button" class="col btn btn-outline-secondary">
+                        Batal
+                    </a>
+                    <button id="delete-btn" type="button" class="col btn btn-danger">
+                        Hapus
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <% } %>
+</main>

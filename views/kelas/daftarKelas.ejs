@@ -1,0 +1,220 @@
+<%- contentFor('content') %>
+<main>
+    <div class="container-fluid px-4">
+        <h1 class="mt-4">Dasbor</h1>
+        <ol class="breadcrumb mb-4">
+            <li class="text-capitalize breadcrumb-item">
+                <a class="text-decoration-none" href="/"
+                    >Dasbor <%= admin.length > 0 && petugas.length < 1 ? admin[0].tingkatan : petugas[0].tingkatan %></a
+                >
+            </li>
+            <li class="text-capitalize breadcrumb-item active">
+                Daftar Kelas
+            </li>
+        </ol>
+        <% const kolomKelas = ['No.', 'ID', 'Nama Kelas', 'Nama Jurusan', 'Aksi'] %>
+        <!-- Tampilan daftar kelas untuk Admin -->
+        <% if (admin.length > 0 && petugas.length < 1) { %>
+        <div id="utama" class="d-grid d-lg-flex gap-3 h-100 position-relative mb-4">
+            <div class="w-100 card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <div>
+                        <i class="fas fa-table me-1"></i>
+                        Daftar Kelas
+                    </div>
+                    <div>
+                        <button
+                            type="button"
+                            class="btn btn-sm btn-success <%= err.length > 0 ? '' : 'collapsed' %>"
+                            data-bs-toggle="collapse"
+                            data-bs-target="#tambahKelas"
+                            aria-expanded="<%= err.length > 0 ? 'true' : 'false' %>"
+                            aria-controls="tambahKelas"
+                        >
+                            Tambah Kelas<i class="bi bi-plus ms-1"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <table
+                        class="table table-hover table-bordered"
+                        id="tabel-print-1"
+                    >
+                        <thead>
+                            <tr>
+                                <% const kolomKelas1 = ['No.', 'ID', 'Nama Kelas', 'Nama Jurusan', 'Aksi'] %>
+                                <% kolomKelas1.forEach(kolom => { %>
+                                <th><%= kolom %></th>
+                                <% }) %>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% kelas.forEach((baris, i) => { %>
+                            <tr>
+                                <th><%= i+1 %>.</th>
+                                <td><%= baris.id_kelas %></td>
+                                <td><%= baris.nama_kelas %></td>
+                                <td><%= baris.nama_jurusan %></td>
+                                <td>
+                                    <a href="?hapus=hapus-kelas&id=<%= baris.id_kelas %>" role="button" class="w-100 h-100 btn btn-outline-danger"><i class="bi bi-trash3-fill"></i></a>
+                                </td>
+                            </tr>
+                            <% }) %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <% if (berhasil.length > 0) { %>
+            <!-- Pesan berhasil -->
+            <div id="pesan-berhasil" class="alert alert-success alert-dismissible" role="alert">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="d-flex align-items-center gap-3 p-3">
+                        <i class="bi bi-check-circle-fill display-4 d-inline-flex"></i>
+                        <div class="d-grid">
+                            <div><%= keterangan %> Data <span class="text-capitalize"><%= lokasi %></span> berhasil!</div>
+                            <div class="small"><span class="text-capitalize"><%= lokasi %></span> dengan ID <span class="fw-bold"><%= berhasil[0].id_kelas %></span> bernama <span class="fw-bold"><%= berhasil[0].nama_kelas %></span> berhasil <span class="text-lowercase">di<%= keterangan %></span></div>
+                        </div>
+                    </div>
+                    <button type="button" class="position-relative btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                <div class="progress" role="progressbar" aria-label="Loading bar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                    <div class="progress-bar progress-bar-striped progress-bar-animated"></div>
+                </div>
+            </div>
+            <% } %>
+            <% if (query.ubah === undefined) { %>
+            <!-- Form tambah kelas -->
+            <div id="tambahKelas" class="<%= err.length > 0 ? 'show' : '' %> collapse sticky-lg-top h-100 justify-content-evenly collapse-horizontal card col-12 col-sm-8 col-md-6 col-lg-4 col-xxl-3 mx-auto p-4">
+                <h1 class="fs-4 text-center mb-3">Kelas Baru</h1>
+                <form id="form-tambah" action="/kelas/" method="post">
+                    <!-- Memasukan angka kelas dengan validasi -->
+                    <div class="mb-3">
+                        <div id="tingkat-container" class="
+                        <% if(err.length > 0) { %>
+                            <% err.forEach((error) => { %>
+                                <%= error.param === "tingkat_kelas" && error.msg == "Harap isi Tingkatan Kelas" ? 'is-invalid' : '' %>
+                            <% }) %>
+                        <% } %>">
+                            <label class="mb-1" for="tingkatKelas">Tingkat Kelas</label>
+                            <select id="tingkat_kelas" name="tingkat_kelas" class="form-select" aria-label="Pilih Tingkatan Kelas">
+                                <option value="" selected>-- Pilih Tingkat Kelas --</option>
+                                <option value="10">10</option>
+                                <option value="11">11</option>
+                                <option value="12">12</option>
+                            </select>
+                        </div>
+                        <% if(err.length > 0) { %>
+                            <% err.forEach((error) => { %>
+                                <% if(error.param === "tingkat_kelas" && error.msg == "Harap isi ID Kelas") { %>
+                                    <div id="validasiKelas" class="invalid-feedback"> 
+                                        <%= error.msg %>
+                                    </div>
+                                <% } %>
+                            <% }) %>
+                        <% } %>
+                    </div>
+                    <!-- Memasukan nama jurusan dengan validasi -->
+                    <div class="mb-3">
+                        <div id="jurusan-container" class="
+                        <% if(err.length > 0) { %>
+                            <% err.forEach((error) => { %>
+                                <%= error.param === "nama_jurusan" && error.msg == "Harap isi Nama Jurusan" ? 'is-invalid' : '' %>
+                            <% }) %>
+                        <% } %>">
+                            <label class="mb-1" for="namaJurusan">Nama Jurusan</label>
+                            <select id="nama_jurusan" name="nama_jurusan" class="form-select" aria-label="Pilih Jurusan">
+                                <option value="" selected>-- Pilih Nama Jurusan --</option>
+                                <% jurusan.forEach(tiap_jurusan => { %>
+                                <option value="<%= tiap_jurusan.nama_jurusan %>"><%= tiap_jurusan.nama_jurusan %></option>
+                                <% }) %>
+                            </select>
+                        </div>
+                        <% if(err.length > 0) { %>
+                            <% err.forEach((error) => { %>
+                                <% if(error.param === "nama_jurusan" && error.msg == "Harap isi Nama Jurusan") { %>
+                                    <div id="validasiJurusan" class="invalid-feedback"> 
+                                        <%= error.msg %>
+                                    </div>
+                                <% } %>
+                            <% }) %>
+                        <% } %>
+                    </div>
+                    <!-- Kirim form -->
+                    <div class="d-grid">
+                        <button id="submit-btn" type="submit" class="btn btn-primary">
+                            Submit
+                        </button>
+                    </div>
+                </form>
+            </div>
+            <% } %>
+        </div>
+        <% } else if (admin.length < 1 && petugas.length > 0) { %>
+        <div class="card mb-4">
+            <div class="card-header d-flex align-items-center">
+                <i class="fas fa-table me-1"></i>
+                Daftar Kelas
+            </div>
+            <div class="card-body">
+                <table
+                    class="table table-hover table-bordered"
+                    id="tabel-noprint-1"
+                >
+                    <thead>
+                        <tr>
+                            <% const kolomKelas2 = ['No.', 'ID', 'Nama Kelas', 'Nama Jurusan'] %>
+                            <% kolomKelas2.forEach(kolom => { %>
+                            <th><%= kolom %></th>
+                            <% }) %>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% kelas.forEach((baris, i) => { %>
+                        <tr>
+                            <th><%= i+1 %>.</th>
+                            <td><%= baris.id_kelas %></td>
+                            <td><%= baris.nama_kelas %></td>
+                            <td><%= baris.nama_jurusan %></td>
+                        </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <% } %>
+    </div>
+    <!-- Modal -->
+    <!-- Modal hapus jurusan -->
+    <% if (query.hapus !== undefined) { %>
+    <div
+        class="modal modal-sm fade"
+        id="hapus-kelas"
+        data-bs-backdrop="static"
+        data-bs-keyboard="false"
+        tabindex="-1"
+        aria-labelledby="hapusKelasLabel"
+        aria-hidden="true"
+    >
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content px-3">
+                <div class="modal-header justify-content-center px-0">
+                    <h1 class="modal-title text-center" id="hapusKelasLabel">
+                        Hapus Kelas
+                    </h1>
+                </div>
+                <div class="modal-body px-0 text-center">
+                    <p class="fs-5">Apakah anda ingin menghapus data kelas dengan ID <span class="fw-bold"><%= query.id %></span>?</p>
+                </div>
+                <div class="modal-footer justify-content-center gap-1 border-0 px-0 pt-0">
+                    <a href="/kelas" role="button" class="col btn btn-outline-secondary">
+                        Batal
+                    </a>
+                    <button id="delete-btn" type="button" class="col btn btn-danger">
+                        Hapus
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <% } %>
+</main>

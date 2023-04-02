@@ -1,0 +1,42 @@
+<!-- JavaScript Browser -->
+<script src="/js/bootstrap.bundle.min.js"></script>
+<script src="/js/jquery-3.6.3.min.js"></script>
+<script src="/js/axios.min.js"></script>
+<script src="/js/dselect.min.js"></script>
+<script src="/js/fontawesome-5/all.min.js"></script>
+<script src="/js/fontawesome-6/all.min.js"></script>
+<script src="/js/datatables.min.js"></script>
+<script src="/js/browser.js"></script>
+<script src="/js/api.js"></script>
+<% if (title === 'Daftar Jurusan' || title === 'Daftar Kelas' || title === 'Daftar SPP' || title === 'Daftar Akun' || title === 'Detail Siswa' || title === 'Detail Petugas' || title === 'Pembayaran' ) { %>
+    <% if (query !== undefined && berhasil.length < 1) { %>
+        <% if (query.ubah !== undefined) { %>
+        <script type="text/javascript">
+            $(document).ready(function () {
+                $("#<%= query.ubah %>").modal("show");
+            });
+        </script>
+        <% } %>
+        <% if (query.hapus !== undefined) { %>
+        <script type="text/javascript">
+            $(document).ready(function () {
+                $("#<%= query.hapus %>").modal("show");
+            });
+        </script>
+        <% } %>
+        <% if (query.modal !== undefined) { %>
+        <script type="text/javascript">
+            $(document).ready(function () {
+                $("#<%= query.modal %>").modal("show");
+            });
+        </script>
+        <% } %>
+        <% if (err.find((error) => error.param === 'image')) { %>
+        <script type="text/javascript">
+            $(document).ready(function () {
+                $("#bayarSPP").modal("show");
+            });
+        </script>
+        <% } %>
+    <% } %>
+<% } %>
